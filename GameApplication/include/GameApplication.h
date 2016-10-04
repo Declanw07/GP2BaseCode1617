@@ -33,6 +33,8 @@ public:
 
 	void OnEndRender();
 
+	void setViewport(int width, int height);
+
 	virtual void update();
 
 	void initGraphics();
