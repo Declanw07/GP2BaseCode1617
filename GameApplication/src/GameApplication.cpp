@@ -87,6 +87,7 @@ void GameApplication::OnQuit()
 {
 	//set our boolean which controls the loop to false
 	m_bIsRunning = false;
+	SDL_GL_DeleteContext(m_GLcontext);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_Quit();
 	CLOSELOG();
