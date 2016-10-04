@@ -5,7 +5,7 @@ GameApplication::GameApplication()
  	m_pWindow=nullptr;
 	m_WindowWidth=640;
 	m_WindowHeight=480;
-	m_WindowCreationFlags=0;
+	m_WindowCreationFlags=SDL_WINDOW_OPENGL;
 	CREATELOG("log.txt");
 	m_bIsActive=false;
 	m_bIsRunning=false;
@@ -76,6 +76,7 @@ bool GameApplication::init(int args,char * arg[])
 	m_WindowHeight=m_Options.getOptionAsInt("WindowHeight");
   m_WindowTitle=m_Options.getOption("WindowTitle");
 	createWindow(m_WindowTitle,m_WindowWidth,m_WindowHeight,m_WindowCreationFlags);
+	initGraphics();
 
 
 	m_bIsActive=true;
@@ -106,6 +107,63 @@ void GameApplication::OnRestored()
 {
   LOG(INFO,"%s","Restored");
   m_bIsActive=true;
+}
+
+void GameApplication::OnBeginRender()
+{
+}
+
+void GameApplication::render()
+{
+}
+
+void GameApplication::OnEndRender()
+{
+}
+
+void GameApplication::update()
+{
+}
+
+void GameApplication::initGraphics()
+{
+
+	//OpenGl Context
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+		SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+	m_GLcontext = SDL_GL_CreateContext(m_pWindow);
+
+	//GLEW
+	glewExperimental = GL_TRUE;
+
+	GLenum err = glewInit();
+
+	if (GLEW_OK != err) {
+		LOG(ERROR, "Error: %s", glewGetErrorString(err));
+	}
+
+	//OpenGL States
+	//Smooth shading
+	glShadeModel(GL_SMOOTH);
+
+	//clear the background to black
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	//Clear the depth buffer to 1.0
+	glClearDepth(1.0f);
+
+	//Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
+	//The depth test to use
+	glDepthFunc(GL_LEQUAL);
+
+	//Turn on best perspective correction
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
 }
 
 void GameApplication::run()
@@ -165,4 +223,10 @@ void GameApplication::run()
 			}
 		}
 	}
+
+	update();
+
+	OnBeginRender();
+	render();
+	OnEndRender();
 }
