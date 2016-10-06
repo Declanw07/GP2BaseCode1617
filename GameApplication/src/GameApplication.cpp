@@ -132,12 +132,20 @@ void GameApplication::render()
 	//Begin drawing triangles
 	glBegin(GL_TRIANGLES);
 	glColor3f(1.0f, 0.0f, 0.0f); //Colour of the vertices
-	glVertex3f(0.0f, 1.0f, 0.0f); // Top
+	glVertex3f(-1.0f, 1.0f, 0.0f); // Top
+	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(-1.0f, -1.0f, 0.0f); // Bottom Left
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(1.0f, -1.0f, 0.0f); // Bottom Right
+
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, 0.0f);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, -1.0f, 0.0f);
+
 	glEnd();
-
-
 }
 
 void GameApplication::OnEndRender()
@@ -286,11 +294,12 @@ void GameApplication::run()
 				}
 			}
 		}
+
+		update();
+
+		OnBeginRender();
+		render();
+		OnEndRender();
+
 	}
-
-	update();
-
-	OnBeginRender();
-	render();
-	OnEndRender();
 }
