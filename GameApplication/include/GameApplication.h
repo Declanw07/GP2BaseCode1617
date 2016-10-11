@@ -2,6 +2,7 @@
 #define _GAMEAPPLICATION_H
 
 #include "Common.h"
+#include "Shader.h"
 
 //Game Application class, this basically wraps up the initialisation of a game
 //this will be the base class of any game we are making. You should override this
@@ -34,6 +35,10 @@ public:
 	void OnEndRender();
 
 	void setViewport(int width, int height);
+
+	virtual void initScene();
+
+	virtual void destroyScene();
 
 	virtual void update();
 
