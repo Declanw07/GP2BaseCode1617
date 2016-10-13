@@ -206,6 +206,8 @@ void GameApplication::initGraphics()
 	//Set our viewport
 	setViewport((int)m_WindowWidth, (int)m_WindowHeight);
 
+	initScene();
+
 
 }
 
