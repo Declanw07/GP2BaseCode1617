@@ -2,6 +2,7 @@
 #define _GAMEAPPLICATION_H
 
 #include "Common.h"
+#include "Texture.h"
 #include "Shader.h"
 
 //Game Application class, this basically wraps up the initialisation of a game

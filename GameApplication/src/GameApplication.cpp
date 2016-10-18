@@ -56,21 +56,31 @@ void GameApplication::parseConfig(int args,char * arg[])
 }
 
 
-bool GameApplication::init(int args,char * arg[])
+bool GameApplication::init(int args, char * arg[])
 {
-  parseConfig(args,arg);
+	parseConfig(args, arg);
 
 	//Controls the game loop
 	m_bIsRunning = true;
 
-  LOG(INFO,"%s","Initialising SDL");
+	LOG(INFO, "%s", "Initialising SDL");
 	// init everyting - SDL, if it is nonzero we have a problem
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		//std::cout << "ERROR SDL_Init " << SDL_GetError() << std::endl;
-    LOG(ERROR,"SDL can't be initialised %s",SDL_GetError());
+		LOG(ERROR, "SDL can't be initialised %s", SDL_GetError());
 		return false;
 	}
+
+	int imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+	int returnInitFlags = IMG_Init(imageInitFlags);
+
+	if (((returnInitFlags) & (imageInitFlags)) != imageInitFlags); {
+
+		LOG(ERROR, "SDL_Image Init %s", IMG_GetError());
+
+	}
+	
 
 	m_WindowWidth=m_Options.getOptionAsInt("WindowWidth");
 	m_WindowHeight=m_Options.getOptionAsInt("WindowHeight");
@@ -89,6 +99,7 @@ void GameApplication::OnQuit()
 	m_bIsRunning = false;
 	SDL_GL_DeleteContext(m_GLcontext);
 	SDL_DestroyWindow(m_pWindow);
+	IMG_Quit();
 	SDL_Quit();
 	CLOSELOG();
 }
