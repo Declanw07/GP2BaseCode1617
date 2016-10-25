@@ -9,7 +9,7 @@
 #include "Shader.h"
 
 //Load Shader from File
-GLuint loadShaderFromFile(std::string& filename, SHADER_TYPE shaderType)
+GLuint loadShaderFromFile(const std::string& filename, SHADER_TYPE shaderType)
 {
 	LOG(INFO, "Loading File %s", filename.c_str());
 	std::string fileContents;

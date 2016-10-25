@@ -31,6 +31,7 @@ using namespace std;
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>

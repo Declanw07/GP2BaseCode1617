@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "GameObject.h"
 
 //Game Application class, this basically wraps up the initialisation of a game
 //this will be the base class of any game we are making. You should override this

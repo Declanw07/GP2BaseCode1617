@@ -1,13 +1,13 @@
 #include "MyGame.h"
 
 
-struct Vertex {
-
-	float x, y, z;
-	float r, g, b, a;
-	float tu, tv;
-
-};
+//struct Vertex {
+//
+//	vec3 position;
+//	vec4 color;
+//	vec2 texCoord;
+//
+//};
 
 const std::string ASSET_PATH = "assets";
 const std::string SHADER_PATH = "/shaders";
@@ -15,6 +15,7 @@ const std::string TEXTURE_PATH = "/textures";
 
 MyGame::MyGame(){
 
+	m_TestObject = nullptr;
 
 }
 
@@ -26,108 +27,48 @@ MyGame::~MyGame(){
 void MyGame::initScene(){
 
 	Vertex verts[] = {
-		{-0.5f, -0.5f, 0.0f, 0.8f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
-		{-0.5f, 0.5f, 0.0f, 0.0f, 0.8f, 0.0f, 1.0f, 0.0f, 0.0f},
-		{0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.8f, 1.0f, 1.0f, 1.0f},
-		{0.5f, 0.5f, 0.0f, 0.0f, 0.8f, 0.8f, 1.0f, 1.0f, 0.0f}
+		{vec3(-0.5f, -0.5f, 0.0f), vec4(0.8f, 0.0f, 0.0f, 1.0f), vec2(0.0f, 1.0f)},
+		{vec3(-0.5f, 0.5f, 0.0f), vec4(0.0f, 0.8f, 0.0f, 1.0f), vec2(0.0f, 0.0f)},
+		{vec3(0.5f, -0.5f, 0.0f), vec4(0.0f, 0.0f, 0.8f, 1.0f), vec2(1.0f, 1.0f)},
+		{vec3(0.5f, 0.5f, 0.0f), vec4(0.0f, 0.8f, 0.8f, 1.0f), vec2(1.0f, 0.0f)}
 	};
 
-	glGenBuffers(1, &m_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vertex), verts, GL_STATIC_DRAW);
 
-	glGenVertexArrays(1, &m_VAO);
-	glBindVertexArray(m_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	m_TestObject = new GameObject;
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), NULL);
+	
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(3 * sizeof(float)));
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)(7 * sizeof(float)));
-
-	GLuint vertexShaderProgram = 0;
 	std::string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
-	vertexShaderProgram = loadShaderFromFile(vsPath,
-		VERTEX_SHADER);
 
-	GLuint fragmentShaderProgram = 0;
 	std::string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
-	fragmentShaderProgram = loadShaderFromFile(fsPath,
-		FRAGMENT_SHADER);
+
+	m_TestObject->loadShaders(vsPath, fsPath);
 
 	string texturePath = ASSET_PATH + TEXTURE_PATH +
 		"/texture.png";
-	m_Texture = loadTextureFromFile(texturePath);
+	m_TestObject->loadTexture(texturePath);
 
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glGenSamplers(1, &m_Sampler);
-	glSamplerParameteri(m_Sampler, GL_TEXTURE_MIN_FILTER,
-		GL_LINEAR);
-	glSamplerParameteri(m_Sampler, GL_TEXTURE_MAG_FILTER,
-		GL_LINEAR);
-	glSamplerParameteri(m_Sampler, GL_TEXTURE_WRAP_S,
-		GL_CLAMP);
-	glSamplerParameteri(m_Sampler, GL_TEXTURE_WRAP_T,
-		GL_CLAMP);
-
-	m_ShaderProgram = glCreateProgram();
-	glAttachShader(m_ShaderProgram, vertexShaderProgram);
-	glAttachShader(m_ShaderProgram, fragmentShaderProgram);
-	glLinkProgram(m_ShaderProgram);
-	checkForLinkErrors(m_ShaderProgram);
-	logShaderInfo(m_ShaderProgram);
-
-	glDeleteShader(vertexShaderProgram);
-	glDeleteShader(fragmentShaderProgram);
+	m_TestObject->CopyVertexData(verts, 4);
 
 }
 
 void MyGame::destroyScene(){
 
-	glDeleteProgram(m_ShaderProgram);
+	if (m_TestObject) {
 
-	glDeleteVertexArrays(1, &m_VAO);
-	glDeleteBuffers(1, &m_VBO);
+		m_TestObject->OnDestroy();
+		delete(m_TestObject);
+		m_TestObject = nullptr;
 
-	glDeleteTextures(1, &m_Texture);
-	glDeleteSamplers(1, &m_Sampler);
+	}
 
 }
 
-void MyGame::render(){
+void MyGame::render() {
 
-	glUseProgram(m_ShaderProgram);
-	glBindVertexArray(m_VAO);
+	GameApplication::render();
 
-	GLint MVPLocation = glGetUniformLocation(m_ShaderProgram,
-		"MVP");
-
-	if (MVPLocation != -1) {
-
-		mat4 MVP = m_ProjMatrix* m_ViewMatrix* m_ModelMatrix;
-		glUniformMatrix4fv(MVPLocation, 1,
-			GL_FALSE, glm::value_ptr(MVP));
-
-	}
-
-	glBindSampler(0, m_Sampler);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
-	GLint textureLocation = glGetUniformLocation(m_ShaderProgram, "diffuseSampler");
-
-	if (textureLocation != -1) {
-
-		glUniform1i(textureLocation, 0);
-
-	}
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	m_TestObject->OnRender(m_ViewMatrix, m_ProjMatrix);
 
 }
 
@@ -138,5 +79,7 @@ void MyGame::udpate(){
 	m_ViewMatrix = lookAt(vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f),
 		vec3(0.0f, 1.0f, 0.0f));
 	m_ModelMatrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, -1.0f));
+
+	m_TestObject()->OnUpdate();
 
 }

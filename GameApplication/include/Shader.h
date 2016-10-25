@@ -17,7 +17,7 @@ enum SHADER_TYPE
 	FRAGMENT_SHADER=GL_FRAGMENT_SHADER
 };
 
-GLuint loadShaderFromFile(std::string& filename, SHADER_TYPE shaderType);
+GLuint loadShaderFromFile(const std::string& filename, SHADER_TYPE shaderType);
 GLuint loadShaderFromMemory(const char * pMem, SHADER_TYPE shaderType);
 
 bool checkForLinkErrors(GLuint program);
