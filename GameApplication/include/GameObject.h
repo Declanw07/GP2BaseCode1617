@@ -19,7 +19,7 @@ public:
 	void OnDestroy();
 	void LoadTexture(const string& filename);
 	void LoadShaders(const string& vsFilename, const string& fsFilename);
-	void CopyVertexData(Vertex* pVertex, int numberOfVertices);
+	void CopyVertexData(Vertex* pVertex, unsigned int* Indices, int numberOfVertices, int numberOfIndices);
 
 private:
 
@@ -30,6 +30,7 @@ private:
 
 	GLuint m_VBO;
 	GLuint m_VAO;
+	GLuint m_IBO;
 
 	vec3 m_Position;
 	vec3 m_Rotation;
@@ -40,6 +41,7 @@ private:
 	mat4 m_ScaleMatrix;
 
 	int m_NumberOfVerts;
+	int m_NumberOfIndices;
 
 
 protected:

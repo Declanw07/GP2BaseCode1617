@@ -18,6 +18,7 @@ public:
 private:
 	GLuint m_VBO;
 	GLuint m_VAO;
+	GLuint m_IBO;
 
 	GLuint m_ShaderProgram;
 	GLuint m_Texture;
@@ -27,6 +28,8 @@ private:
 	mat4 m_ViewMatrix;
 	mat4 m_ProjMatrix;
 	mat4 m_ModelMatrix;
+
+	GameObject* m_TestObject;
 
 };
 #endif

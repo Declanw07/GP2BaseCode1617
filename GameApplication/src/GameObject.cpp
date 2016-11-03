@@ -5,6 +5,7 @@ GameObject::GameObject()
 
 	m_VBO = 0;
 	m_VAO = 0;
+	m_IBO = 0;
 
 	m_ShaderProgram = 0;
 
@@ -22,6 +23,7 @@ GameObject::GameObject()
 	m_ScaleMatrix = mat4(1.0f);
 
 	m_NumberOfVerts = 0;
+	m_NumberOfIndices = 0;
 
 }
 
@@ -58,8 +60,10 @@ void GameObject::OnRender(mat4 & view, mat4 & projection)
 		glUniform1i(textureLocation, 0);
 
 	}
+	
+	glDrawElements(GL_TRIANGLES, m_NumberOfIndices, GL_UNSIGNED_INT, 0);
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, m_NumberOfVerts);
+	/*glDrawArrays(GL_TRIANGLES, 0, m_NumberOfVerts);*/
 
 }
 
@@ -88,6 +92,7 @@ void GameObject::OnDestroy()
 
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_IBO);
 
 	glDeleteTextures(1, &m_Texture);
 	glDeleteSamplers(1, &m_Sampler);
@@ -139,8 +144,15 @@ void GameObject::LoadShaders(const string & vsFilename, const string & fsFilenam
 
 }
 
-void GameObject::CopyVertexData(Vertex * pVerts, int numberOfVertices)
+void GameObject::CopyVertexData(Vertex * pVerts, unsigned int* Indices, int numberOfVertices, int numberOfIndices)
 {
+
+	m_NumberOfIndices = numberOfIndices;
+	m_NumberOfIndices = numberOfVertices;
+
+	glGenBuffers(1, &m_IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(unsigned int), Indices, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &m_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -149,6 +161,7 @@ void GameObject::CopyVertexData(Vertex * pVerts, int numberOfVertices)
 	glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void**)offsetof(Vertex, position));
