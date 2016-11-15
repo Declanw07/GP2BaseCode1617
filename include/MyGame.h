@@ -30,6 +30,7 @@ private:
 	mat4 m_ModelMatrix;
 
 	GameObject* m_TestObject;
+	GameObject* m_TeaPot;
 
 };
 #endif

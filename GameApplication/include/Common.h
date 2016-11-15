@@ -25,6 +25,9 @@ using namespace std;
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_opengl.h>
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #define GLM_FORCE_RADIANS
 //Maths Headers

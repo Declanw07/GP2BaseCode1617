@@ -12,6 +12,7 @@
 const std::string ASSET_PATH = "assets";
 const std::string SHADER_PATH = "/shaders";
 const std::string TEXTURE_PATH = "/textures";
+const std::string MODEL_PATH = "/models";
 
 MyGame::MyGame(){
 
@@ -53,6 +54,10 @@ void MyGame::initScene(){
 	string texturePath = ASSET_PATH + TEXTURE_PATH +
 		"/texture.png";
 	m_TestObject->LoadTexture(texturePath);
+
+	string modelPath = ASSET_PATH + MODEL_PATH +
+		"/utah-teapot.fbx";
+	m_TeaPot->loadModelFromFile(modelPath);
 
 	m_TestObject->CopyVertexData(verts, Indices, 4, 6);
 
